@@ -1,0 +1,158 @@
+import {
+  CalendarCheck,
+  Check,
+  Clock,
+  HeartPulse,
+  Info,
+  Siren,
+  type LucideIcon,
+} from 'lucide-react'
+import type { TriageAssessment, TriageUrgency } from '../../types/triage'
+import { cn } from '../../utils/cn'
+
+interface UrgencyMeta {
+  label: string
+  title: string
+  icon: LucideIcon
+  border: string
+  header: string
+  titleTone: string
+  iconBox: string
+  badge: string
+}
+
+const urgencyMeta: Record<TriageUrgency, UrgencyMeta> = {
+  emergency: {
+    label: 'Emergency',
+    title: 'Seek emergency help now',
+    icon: Siren,
+    border: 'border-brand-critical/30',
+    header: 'bg-brand-critical-soft',
+    titleTone: 'text-brand-critical',
+    iconBox: 'bg-brand-critical text-white',
+    badge: 'bg-white text-brand-critical ring-1 ring-brand-critical/20',
+  },
+  urgent: {
+    label: 'Urgent',
+    title: 'Arrange prompt medical assessment',
+    icon: Clock,
+    border: 'border-brand-warning/30',
+    header: 'bg-brand-warning-soft',
+    titleTone: 'text-brand-warning',
+    iconBox: 'bg-brand-warning text-white',
+    badge: 'bg-white text-brand-warning ring-1 ring-brand-warning/20',
+  },
+  routine: {
+    label: 'Routine',
+    title: 'Book a routine consultation',
+    icon: CalendarCheck,
+    border: 'border-brand-blue/20',
+    header: 'bg-brand-blue-soft',
+    titleTone: 'text-brand-blue-dark',
+    iconBox: 'bg-brand-blue text-white',
+    badge: 'bg-white text-brand-blue ring-1 ring-brand-blue/15',
+  },
+  'self-care': {
+    label: 'Self-care',
+    title: 'General self-care guidance',
+    icon: HeartPulse,
+    border: 'border-brand-teal/20',
+    header: 'bg-brand-teal-soft',
+    titleTone: 'text-brand-teal-dark',
+    iconBox: 'bg-brand-teal text-white',
+    badge: 'bg-white text-brand-teal-dark ring-1 ring-brand-teal/20',
+  },
+}
+
+interface TriageResultCardProps {
+  result: TriageAssessment
+}
+
+export function TriageResultCard({ result }: TriageResultCardProps) {
+  const meta = urgencyMeta[result.urgency]
+  const Icon = meta.icon
+
+  return (
+    <section
+      aria-labelledby="triage-result-heading"
+      className={cn('overflow-hidden rounded-3xl border bg-white shadow-sm', meta.border)}
+    >
+      <div className={cn('px-5 py-5 sm:px-6', meta.header)}>
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div className="flex items-start gap-3">
+            <span
+              className={cn(
+                'flex size-11 shrink-0 items-center justify-center rounded-2xl',
+                meta.iconBox,
+              )}
+            >
+              <Icon className="size-5" aria-hidden="true" />
+            </span>
+            <div>
+              <p
+                className={cn(
+                  'text-[10px] font-semibold tracking-[0.16em] uppercase',
+                  meta.titleTone,
+                )}
+              >
+                Simulated triage result
+              </p>
+              <h1
+                id="triage-result-heading"
+                tabIndex={-1}
+                className={cn(
+                  'mt-1 text-xl font-bold tracking-tight focus:outline-none sm:text-2xl',
+                  meta.titleTone,
+                )}
+              >
+                {meta.title}
+              </h1>
+            </div>
+          </div>
+          <span
+            className={cn(
+              'inline-flex items-center rounded-full px-3 py-1 text-xs font-bold',
+              meta.badge,
+            )}
+          >
+            {meta.label}
+          </span>
+        </div>
+        <p className="mt-3 max-w-2xl text-sm leading-relaxed text-brand-navy-soft">
+          {result.explanation}
+        </p>
+      </div>
+
+      <div className="p-5 sm:p-6">
+        <h2 className="text-[10px] font-semibold tracking-[0.14em] text-brand-navy-soft/70 uppercase">
+          Why this result
+        </h2>
+        <ul className="mt-2 grid gap-1.5 text-xs leading-relaxed text-brand-navy-soft sm:grid-cols-2">
+          {result.reasons.map((reason) => (
+            <li key={reason} className="flex items-start gap-2">
+              <span className="mt-0.5 flex size-4 shrink-0 items-center justify-center rounded-full bg-brand-surface text-brand-blue">
+                <Check className="size-2.5" strokeWidth={3} aria-hidden="true" />
+              </span>
+              {reason}
+            </li>
+          ))}
+        </ul>
+
+        <div className={cn('mt-4 rounded-2xl p-4', meta.header)}>
+          <p className="text-[10px] font-semibold tracking-[0.14em] text-brand-navy-soft/80 uppercase">
+            Recommended next step
+          </p>
+          <p className="mt-1 text-sm leading-relaxed font-semibold text-brand-navy">
+            {result.nextStep}
+          </p>
+        </div>
+
+        <p className="mt-3 flex items-start gap-2 text-[10px] leading-relaxed text-brand-navy-soft/70">
+          <Info className="mt-0.5 size-3.5 shrink-0" aria-hidden="true" />
+          Generated by transparent demo rules, not a live AI model. This is not a diagnosis, is
+          not clinically validated, and does not replace professional medical care.
+        </p>
+      </div>
+    </section>
+  )
+}

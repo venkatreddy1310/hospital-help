@@ -1,0 +1,25 @@
+export interface ApiSuccess<T> {
+  success: true
+  data: T
+}
+
+export interface ApiErrorBody {
+  code: string
+  message: string
+}
+
+export interface ApiFailure {
+  success: false
+  error: ApiErrorBody
+}
+
+export type ApiResponse<T> = ApiSuccess<T> | ApiFailure
+
+export interface HealthStatus {
+  status: 'ok'
+  service: string
+  version: string
+  environment: string
+  timestamp: string
+  uptimeSeconds: number
+}
